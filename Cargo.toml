@@ -1,0 +1,27 @@
+[package]
+name = "picpack"
+version = "0.0.1"
+authors = ["Rodney Johnson <ask@rodneylab.com>"]
+edition = "2021"
+license = "BSD-3-Clause"
+repository = "https://github.com/rodneylab/picpack"
+description = "Web image tooling"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate_type = ["cdylib"]
+
+[profile.release]
+codegen-units = 1
+incremental = true
+lto = true
+opt-level = "z"
+
+[dependencies]
+base64 = "0.21.0"
+image = { version = "0.24.5", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dxt", "dds", "farbfeld"] }
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.4.5"
+thumbhash = "0.1.0"
+wasm-bindgen = { version = "=0.2.83", features = ["serde-serialize"] }
