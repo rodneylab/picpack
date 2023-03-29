@@ -117,7 +117,7 @@ mod tests {
     }
 
     #[test]
-    fn output_dimensions_returns_expected_values_for_min_clip() {
+    fn output_dimensions_returns_expected_values_for_clip() {
         // prepare
         let input_width: u32 = 300;
         let input_height: u32 = 200;
@@ -132,6 +132,37 @@ mod tests {
         );
     }
 
+    #[test]
+    fn output_dimensions_returns_expected_values_for_clip_with_no_width() {
+        // prepare
+        let input_width: u32 = 300;
+        let input_height: u32 = 200;
+        let width = Some(100u32);
+        let height = None;
+        let fit = Some("clip");
+
+        // assert
+        assert_eq!(
+            (100, 67),
+            output_dimensions(input_width, input_height, width, height, fit)
+        );
+    }
+
+    #[test]
+    fn output_dimensions_returns_expected_values_for_clip_with_no_height() {
+        // prepare
+        let input_width: u32 = 300;
+        let input_height: u32 = 200;
+        let width = None;
+        let height = Some(66u32);
+        let fit = Some("clip");
+
+        // assert
+        assert_eq!(
+            (99, 66),
+            output_dimensions(input_width, input_height, width, height, fit)
+        );
+    }
     #[test]
     fn output_dimensions_returns_expected_values_with_no_fit_specified() {
         // prepare
