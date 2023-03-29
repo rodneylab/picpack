@@ -73,14 +73,15 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
 
     // generate base64
     let format = format.expect("Expected supported image format");
-    let placeholder = match image_to_base64(&buffer, format) {
-        Some(value) => value,
-        None => return error_result("Error generating image base64"),
-    };
-
-    let result = PlaceholderResult {
-        placeholder: Some(placeholder),
-        error: None,
+    let result = match image_to_base64(&buffer, format) {
+        Some(placeholder) => PlaceholderResult {
+            placeholder: Some(placeholder),
+            error: None,
+        },
+        None => PlaceholderResult {
+            placeholder: None,
+            error: Some("Error generating image base64".to_string()),
+        },
     };
     serde_wasm_bindgen::to_value(&result).unwrap()
 }
