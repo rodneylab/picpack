@@ -87,7 +87,7 @@ mod tests {
         let input_height: u32 = 200;
         let mut width = Some(500u32);
         let mut height = Some(200u32);
-        let fit = Some(String::from("min"));
+        let fit = Some("min");
 
         // assert
         assert_eq!(
@@ -123,7 +123,7 @@ mod tests {
         let input_height: u32 = 200;
         let width = Some(100u32);
         let height = Some(100u32);
-        let fit = Some(String::from("clip"));
+        let fit = Some("clip");
 
         // assert
         assert_eq!(
