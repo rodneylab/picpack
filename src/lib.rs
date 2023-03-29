@@ -2,21 +2,23 @@ mod fit;
 mod image_utilities;
 
 use image::{DynamicImage::ImageRgba8, ImageBuffer, ImageFormat, ImageOutputFormat};
-use image_utilities::{image_to_base64, resize_image};
+use image_utilities::{image_to_base64, resize_image, rgba_to_hex};
 use serde::Serialize;
 use std::io::{Cursor, Read, Seek};
-use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_rgba};
+use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_average_rgba, thumb_hash_to_rgba};
 use wasm_bindgen::{prelude::*, JsValue};
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
 struct PlaceholderResult {
-    placeholder: Option<String>,
+    average: Option<String>,
+    base64: Option<String>,
     error: Option<String>,
 }
 
 fn error_result(message: &str) -> JsValue {
     let result = PlaceholderResult {
-        placeholder: None,
+        average: None,
+        base64: None,
         error: Some(message.into()),
     };
     serde_wasm_bindgen::to_value(&result).unwrap()
@@ -29,16 +31,20 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
         Err(_) => return error_result("Unable to read input image bytes."),
     };
     let (thumbhash_width, thumbhash_height, resized_image) =
-        resize_image(&input_image, Some(100), None, Some("clip"));
+        resize_image(&input_image, Some(100), Some(100), Some("clip"));
 
     // create thumbhash image
-    let hash = rgba_to_thumb_hash(
+    let thumbhash_vec = rgba_to_thumb_hash(
         thumbhash_width.try_into().unwrap(),
         thumbhash_height.try_into().unwrap(),
         &resized_image.into_bytes(),
     );
+    let average = match thumb_hash_to_average_rgba(&thumbhash_vec) {
+        Ok(value) => rgba_to_hex(value),
+        Err(_) => return error_result("Unable to determine image average rgba hex value"),
+    };
     let (placeholder_width, placeholder_height, placeholder_bytes) =
-        thumb_hash_to_rgba(&hash).unwrap();
+        thumb_hash_to_rgba(&thumbhash_vec).unwrap();
     let placeholder_image = ImageRgba8(
         ImageBuffer::from_raw(
             placeholder_width.try_into().unwrap(),
@@ -75,11 +81,13 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
     let format = format.expect("Expected supported image format");
     let result = match image_to_base64(&buffer, format) {
         Some(placeholder) => PlaceholderResult {
-            placeholder: Some(placeholder),
+            average: Some(average),
+            base64: Some(placeholder),
             error: None,
         },
         None => PlaceholderResult {
-            placeholder: None,
+            average: None,
+            base64: None,
             error: Some("Error generating image base64".to_string()),
         },
     };

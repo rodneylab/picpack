@@ -6,6 +6,11 @@ use image::{
     ImageFormat,
 };
 
+fn decimal_to_u8(decimal: f32) -> u8 {
+    assert!((0.0..=1.0).contains(&decimal));
+    ((256.0 * decimal).round()) as u8
+}
+
 pub fn image_to_base64(image_bytes: &[u8], format: ImageFormat) -> Option<String> {
     let mime_type = match format {
         ImageFormat::Png => "image/png",
@@ -36,4 +41,15 @@ pub fn resize_image(
         FilterType::Lanczos3,
     ));
     (resized_width, resized_height, image)
+}
+
+pub fn rgba_to_hex(rgba: (f32, f32, f32, f32)) -> String {
+    let (red, green, blue, alpha) = rgba;
+    let r = decimal_to_u8(red);
+    let g = decimal_to_u8(green);
+    let b = decimal_to_u8(blue);
+    let a = decimal_to_u8(alpha);
+    let result = format!("#{r:x}{g:x}{b:x}{a:x}");
+
+    result
 }
