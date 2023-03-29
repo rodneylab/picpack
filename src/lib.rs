@@ -1,12 +1,8 @@
 mod fit;
-use fit::output_dimensions;
+mod image_utilities;
 
-use base64::{engine::general_purpose, Engine as _};
-use image::{
-    imageops::{self, FilterType},
-    DynamicImage::ImageRgba8,
-    ImageBuffer, ImageFormat, ImageOutputFormat,
-};
+use image::{DynamicImage::ImageRgba8, ImageBuffer, ImageFormat, ImageOutputFormat};
+use image_utilities::{image_to_base64, resize_image};
 use serde::Serialize;
 use std::io::{Cursor, Read, Seek};
 use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_rgba};
@@ -32,18 +28,8 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
         Ok(value) => value,
         Err(_) => return error_result("Unable to read input image bytes."),
     };
-    let input_width = input_image.width();
-    let input_height = input_image.height();
-
-    // reduce image size to generate thumbhash
-    let (thumbhash_width, thumbhash_height) =
-        output_dimensions(input_width, input_height, Some(100), None, Some("clip"));
-    let resized_image = ImageRgba8(imageops::resize(
-        &input_image,
-        thumbhash_width,
-        thumbhash_height,
-        FilterType::Lanczos3,
-    ));
+    let (thumbhash_width, thumbhash_height, resized_image) =
+        resize_image(&input_image, Some(100), None, Some("clip"));
 
     // create thumbhash image
     let hash = rgba_to_thumb_hash(
@@ -65,19 +51,17 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
     // create base64 image representation
     let format = image::guess_format(image_bytes);
     let mut cursor = Cursor::new(Vec::new());
-    let mime_type = match format {
+    match format {
         Ok(ImageFormat::Png) => {
             placeholder_image
                 .write_to(&mut cursor, ImageOutputFormat::Png)
                 .unwrap();
-            "image/png"
         }
         Ok(ImageFormat::Jpeg) => {
             let jpeg_quality = 90;
             placeholder_image
                 .write_to(&mut cursor, ImageOutputFormat::Jpeg(jpeg_quality))
                 .unwrap();
-            "image/jpeg"
         }
         Ok(_) | Err(_) => {
             return error_result("Image format not currently supported.");
@@ -87,9 +71,12 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
     cursor.rewind().unwrap();
     cursor.read_to_end(&mut buffer).unwrap();
 
-    let mut base64 = String::new();
-    general_purpose::STANDARD_NO_PAD.encode_string(buffer, &mut base64);
-    let placeholder = format!("data:{mime_type};base64,{base64}");
+    // generate base64
+    let format = format.expect("Expected supported image format");
+    let placeholder = match image_to_base64(&buffer, format) {
+        Some(value) => value,
+        None => return error_result("Error generating image base64"),
+    };
 
     let result = PlaceholderResult {
         placeholder: Some(placeholder),
