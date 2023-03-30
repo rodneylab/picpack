@@ -7,6 +7,9 @@ license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/picpack"
 description = "Web image tooling"
 
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
