@@ -2,16 +2,26 @@ mod fit;
 mod image_utilities;
 
 use image::{DynamicImage::ImageRgba8, ImageBuffer, ImageFormat, ImageOutputFormat};
-use image_utilities::{image_to_base64, resize_image, rgba_to_hex};
+use image_utilities::{
+    format_to_mime_type, image_dimensions, image_to_base64, resize_image, rgba_to_hex,
+};
 use serde::Serialize;
 use std::io::{Cursor, Read, Seek};
 use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_average_rgba, thumb_hash_to_rgba};
 use wasm_bindgen::{prelude::*, JsValue};
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
+struct ImageMetadata {
+    width: u32,
+    height: u32,
+    format: String,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize)]
 struct PlaceholderResult {
     average: Option<String>,
     base64: Option<String>,
+    metadata: Option<ImageMetadata>,
     error: Option<String>,
 }
 
@@ -19,6 +29,7 @@ fn error_result(message: &str) -> JsValue {
     let result = PlaceholderResult {
         average: None,
         base64: None,
+        metadata: None,
         error: Some(message.into()),
     };
     serde_wasm_bindgen::to_value(&result).unwrap()
@@ -30,8 +41,15 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
         Ok(value) => value,
         Err(_) => return error_result("Unable to read input image bytes."),
     };
-    let (thumbhash_width, thumbhash_height, resized_image) =
-        resize_image(&input_image, Some(100), Some(100), Some("clip"));
+    let (width, height) = image_dimensions(&input_image);
+    let (thumbhash_width, thumbhash_height, resized_image) = resize_image(
+        &input_image,
+        width,
+        height,
+        Some(100),
+        Some(100),
+        Some("clip"),
+    );
 
     // create thumbhash image
     let thumbhash_vec = rgba_to_thumb_hash(
@@ -79,15 +97,22 @@ pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
 
     // generate base64
     let format = format.expect("Expected supported image format");
-    let result = match image_to_base64(&buffer, format) {
+    let mime_type = format_to_mime_type(format).expect("Expected supported image format");
+    let result = match image_to_base64(&buffer, &mime_type) {
         Some(placeholder) => PlaceholderResult {
             average: Some(average),
             base64: Some(placeholder),
+            metadata: Some(ImageMetadata {
+                width,
+                height,
+                format: mime_type,
+            }),
             error: None,
         },
         None => PlaceholderResult {
             average: None,
             base64: None,
+            metadata: None,
             error: Some("Error generating image base64".to_string()),
         },
     };
