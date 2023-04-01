@@ -1,0 +1,23 @@
+{
+  "name": "root",
+  "collaborators": [
+    "Rodney Johnson <ask@rodneylab.com>"
+  ],
+  "description": "Web image tooling",
+  "version": "0.0.3",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodneylab/picpack"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "wasm-pack build --target nodejs --scope rodneylab",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@rodneylab/picpack": "link:./pkg",
+    "vitest": "^0.29.8"
+  }
+}
