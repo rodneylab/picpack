@@ -13,11 +13,16 @@
   "main": "index.js",
   "scripts": {
     "build": "wasm-pack build --target nodejs --scope rodneylab",
-    "test": "vitest"
+    "format": "prettier --write --plugin-search-dir=. './**/*.ts'",
+    "prettier:check": "prettier --check --plugin-search-dir=. './**/*.ts'",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "devDependencies": {
     "@rodneylab/picpack": "link:./pkg",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.7",
     "vitest": "^0.29.8"
   }
 }
