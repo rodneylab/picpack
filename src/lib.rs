@@ -1,11 +1,14 @@
 mod fit;
 mod image_utilities;
 
-use image::{DynamicImage::ImageRgba8, ImageBuffer, ImageFormat, ImageOutputFormat};
+use image::{
+    DynamicImage::{self, ImageRgba8},
+    ImageBuffer, ImageFormat, ImageOutputFormat,
+};
 use image_utilities::{
     format_to_mime_type, image_dimensions, image_to_base64, resize_image, rgba_to_hex,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::io::{Cursor, Read, Seek};
 use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_average_rgba, thumb_hash_to_rgba};
 use wasm_bindgen::{prelude::*, JsValue};
@@ -124,6 +127,97 @@ pub fn get_image_placeholder(image_bytes: &[u8]) -> PlaceholderResult {
 #[wasm_bindgen]
 pub fn image_placeholder(image_bytes: &[u8]) -> JsValue {
     let result = get_image_placeholder(image_bytes);
+
+    serde_wasm_bindgen::to_value(&result).unwrap()
+}
+
+#[derive(Deserialize)]
+struct ResizeImageOptions {
+    width: Option<u32>,
+    height: Option<u32>,
+    fit: Option<String>,
+}
+
+#[derive(Debug, Eq, PartialEq, Serialize)]
+struct ResizeResult {
+    image_bytes: Option<Vec<u8>>,
+    mime_type: Option<String>,
+    error: Option<String>,
+}
+
+fn resize_error_result(message: &str) -> ResizeResult {
+    ResizeResult {
+        image_bytes: None,
+        mime_type: None,
+        error: Some(message.into()),
+    }
+}
+
+fn dynamic_image_to_bytes(image: &DynamicImage, format: ImageFormat) -> Option<Vec<u8>> {
+    let mut cursor = Cursor::new(Vec::new());
+    match format {
+        ImageFormat::Png => {
+            image.write_to(&mut cursor, ImageOutputFormat::Png).unwrap();
+        }
+        ImageFormat::Jpeg => {
+            let jpeg_quality = 90;
+            image
+                .write_to(&mut cursor, ImageOutputFormat::Jpeg(jpeg_quality))
+                .unwrap();
+        }
+        _ => {
+            return None;
+        }
+    };
+    let mut buffer = Vec::new();
+    cursor.rewind().unwrap();
+    cursor.read_to_end(&mut buffer).unwrap();
+
+    Some(buffer)
+}
+
+fn get_resized_image(image_bytes: &[u8], options: ResizeImageOptions) -> ResizeResult {
+    let input_image = match image::load_from_memory(image_bytes) {
+        Ok(value) => value,
+        Err(_) => return resize_error_result("Unable to read input image bytes."),
+    };
+    let (input_width, input_height) = image_dimensions(&input_image);
+    let ResizeImageOptions { width, height, fit } = options;
+    let (_, _, resized_image) = resize_image(
+        &input_image,
+        input_width,
+        input_height,
+        width,
+        height,
+        fit.as_deref(),
+    );
+
+    match image::guess_format(image_bytes) {
+        Ok(format_value) => {
+            let resized_image_bytes = dynamic_image_to_bytes(&resized_image, format_value)
+                .expect("Expected supported image format");
+            let mime_type = format_to_mime_type(format_value);
+
+            ResizeResult {
+                image_bytes: Some(resized_image_bytes),
+                mime_type,
+                error: None,
+            }
+        }
+        Err(_) => resize_error_result("Unsupported image format"),
+    }
+}
+
+#[wasm_bindgen]
+pub fn image_resize(image_bytes: &[u8], options: JsValue) -> JsValue {
+    let result = match serde_wasm_bindgen::from_value(options) {
+        Ok(value) => get_resized_image(image_bytes, value),
+        Err(_) => ResizeResult {
+            image_bytes: None,
+            mime_type: None,
+            error: Some("Unable to read input image bytes".to_string()),
+        },
+    };
 
     serde_wasm_bindgen::to_value(&result).unwrap()
 }
