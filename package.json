@@ -4,7 +4,7 @@
     "Rodney Johnson <ask@rodneylab.com>"
   ],
   "description": "Web image tooling",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "scripts": {
     "build": "wasm-pack build --target nodejs --scope rodneylab",
     "format": "prettier --write --plugin-search-dir=. './**/*.ts'",
-    "prettier:check": "prettier --check --plugin-search-dir=. './**/*.ts'",
+    "prettier:check": "prettier --check './**/*.ts'",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@rodneylab/picpack": "link:./pkg",
     "husky": "^8.0.3",
-    "prettier": "^2.8.7",
-    "vitest": "^0.29.8"
+    "prettier": "^3.0.3",
+    "vitest": "^0.34.6"
   }
 }
