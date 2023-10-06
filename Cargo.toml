@@ -19,7 +19,7 @@ crate_type = ["cdylib"]
 codegen-units = 1
 incremental = true
 lto = true
-#strip = true
+# strip = true
 opt-level = "z"
 
 [dependencies]
