@@ -1,3 +1,9 @@
+## 0.1.0 (2024-01-01)
+
+### Feat
+
+- 🌟 add input image hashing
+
 ## 0.0.4 (2023-10-06)
 
 ### Fix
@@ -20,5 +26,5 @@
 
 ### Refactor
 
-- 🏄🏽 simplfy image_placeholder function
-- 🏄🏽 move image utilities to own source file
+- 🏄🏽  simplfy image_placeholder function
+- 🏄🏽  move image utilities to own source file
