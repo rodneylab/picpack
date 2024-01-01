@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::io::{Cursor, Read, Seek};
 use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_average_rgba, thumb_hash_to_rgba};
 use wasm_bindgen::{prelude::*, JsValue};
+use xxhash_rust::const_xxh3::xxh3_64 as const_xxh3;
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
 struct ImageMetadata {
@@ -222,9 +223,18 @@ pub fn image_resize(image_bytes: &[u8], options: JsValue) -> JsValue {
     serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
+const BITS_TO_POP: u32 = 16;
+/// return truncated xhash has of image bytes as hex encoded string
+#[wasm_bindgen]
+pub fn input_image_hash(image_bytes: &[u8]) -> String {
+    let hash = const_xxh3(image_bytes) >> BITS_TO_POP;
+
+    format!("{hash:x}")
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{get_image_placeholder, ImageMetadata, PlaceholderResult};
+    use super::{get_image_placeholder, input_image_hash, ImageMetadata, PlaceholderResult};
     use std::{fs::File, io::Read, path::Path};
 
     #[test]
@@ -261,5 +271,23 @@ mod tests {
         assert_eq!(100, width);
         assert_eq!(75, height);
         assert_eq!("image/jpeg", &format);
+    }
+
+    #[test]
+    fn get_input_image_hash_generates_expected_result() {
+        // prepare
+        let image_path = Path::new("./images/field.jpg");
+        let mut image_file = File::open(&image_path).expect("Error opening image file for test");
+        let mut image_bytes = Vec::new();
+        image_file
+            .read_to_end(&mut image_bytes)
+            .expect("Error reading image file into vector");
+
+        // act
+        let result = input_image_hash(image_bytes.as_ref());
+
+        // assert
+        let expected_hash = "f175a364a5b9".to_string();
+        assert_eq!(expected_hash, result);
     }
 }
