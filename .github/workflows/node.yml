@@ -22,7 +22,7 @@ jobs:
       - name: Install wasm-pack
         run: cargo install wasm-pack
       - name: Install Node dependencies
-        run: npm ci
+        run: npm install
       - name: Check Format
         run: npm run prettier:check
       - name: Build
