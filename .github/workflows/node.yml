@@ -21,11 +21,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@4f366e621dc8fa63f557ca04b8f4361824a35a45 # stable
       - name: Install wasm-pack
         run: cargo install wasm-pack
-      - name: Install Node dependencies
-        run: npm install
-      - name: Check Format
-        run: npm run prettier:check
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - name: Build
-        run: npm run build
+        run: pnpm run build
+      - name: Install Node dependencies
+        run: pnpm install
+      - name: Check Format
+        run: pnpm run prettier:check
       - name: Test
         run: npm run test
