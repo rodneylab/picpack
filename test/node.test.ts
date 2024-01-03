@@ -1,4 +1,4 @@
-import { image_placeholder } from "@rodneylab/picpack";
+import { image_placeholder, input_image_hash } from "@rodneylab/picpack";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { assert, expect, test } from "vitest";
@@ -25,4 +25,20 @@ test("it generates expected output", () => {
   expect(width).toBe(100);
   expect(height).toBe(75);
   expect(format).toBe("image/jpeg");
+});
+
+test("it generates expected input image hash", () => {
+  // prepare
+  const __dirname = resolve();
+  const imagePath = join(__dirname, "./images/field.jpg");
+  const imageBytes = readFileSync(imagePath);
+
+  // act
+  const result = input_image_hash(imageBytes);
+
+  // assert
+  assert.typeOf(input_image_hash, "function");
+
+  assert.typeOf(result, "string");
+  expect(result).toBe("f175a364a5b9");
 });
