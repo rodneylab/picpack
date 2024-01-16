@@ -28,5 +28,5 @@ image = { version = "0.24.7", default-features = false, features = ["gif", "jpeg
 serde = { version = "1.0", features = ["derive"] }
 serde-wasm-bindgen = "0.6.0"
 thumbhash = "0.1.0"
-wasm-bindgen = { version = "=0.2.89", features = ["serde-serialize"] }
+wasm-bindgen = { version = "=0.2.90", features = ["serde-serialize"] }
 xxhash-rust = { version = "0.8.7", features = ["xxh3", "const_xxh3"] }
