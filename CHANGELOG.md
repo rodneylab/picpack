@@ -1,3 +1,9 @@
+## 0.1.1 (2024-01-16)
+
+### Fix
+
+- **dependencies**: 💫 update packages
+
 ## 0.1.0 (2024-01-01)
 
 ### Feat
@@ -26,5 +32,5 @@
 
 ### Refactor
 
-- 🏄🏽 simplfy image_placeholder function
-- 🏄🏽 move image utilities to own source file
+- 🏄🏽  simplfy image_placeholder function
+- 🏄🏽  move image utilities to own source file
