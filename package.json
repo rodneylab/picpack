@@ -22,7 +22,7 @@
   "devDependencies": {
     "@rodneylab/picpack": "link:pkg",
     "husky": "^8.0.3",
-    "prettier": "^3.2.2",
+    "prettier": "^3.2.4",
     "vitest": "^1.2.0"
   },
   "type": "module"
