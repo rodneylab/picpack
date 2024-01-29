@@ -23,7 +23,7 @@
     "@rodneylab/picpack": "link:pkg",
     "husky": "^8.0.3",
     "prettier": "^3.2.2",
-    "vitest": "^1.2.0"
+    "vitest": "^1.2.2"
   },
   "type": "module"
 }
