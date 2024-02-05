@@ -21,8 +21,8 @@
   "keywords": [],
   "devDependencies": {
     "@rodneylab/picpack": "link:pkg",
-    "husky": "^9.0.7",
-    "prettier": "^3.2.4",
+    "husky": "^9.0.10",
+    "prettier": "^3.2.5",
     "vitest": "^1.2.2"
   },
   "type": "module"
