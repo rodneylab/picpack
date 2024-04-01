@@ -5,6 +5,8 @@ authors = ["Rodney Johnson <ask@rodneylab.com>"]
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/picpack"
+# image 0.25.0 rasises MSRV to 1.67.1
+rust-version = "1.67.1"
 description = "Web image tooling"
 
 [package.metadata.wasm-pack.profile.release]
@@ -24,7 +26,7 @@ opt-level = "z"
 
 [dependencies]
 base64 = "0.22.0"
-image = { version = "0.24.7", default-features = false, features = [
+image = { version = "0.25.1", default-features = false, features = [
   "gif",
   "jpeg",
   "ico",
@@ -34,12 +36,10 @@ image = { version = "0.24.7", default-features = false, features = [
   "tiff",
   "bmp",
   "hdr",
-  "dxt",
   "dds",
-  "farbfeld",
 ] }
 serde = { version = "1.0", features = ["derive"] }
 serde-wasm-bindgen = "0.6.0"
 thumbhash = "0.1.0"
-wasm-bindgen = { version = "=0.2.91", features = ["serde-serialize"] }
+wasm-bindgen = { version = "=0.2.92", features = ["serde-serialize"] }
 xxhash-rust = { version = "0.8.7", features = ["xxh3", "const_xxh3"] }

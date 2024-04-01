@@ -2,8 +2,9 @@ mod fit;
 mod image_utilities;
 
 use image::{
+    codecs::jpeg::JpegEncoder,
     DynamicImage::{self, ImageRgba8},
-    ImageBuffer, ImageFormat, ImageOutputFormat,
+    ImageBuffer, ImageFormat,
 };
 use image_utilities::{
     format_to_mime_type, image_dimensions, image_to_base64, resize_image, rgba_to_hex,
@@ -11,7 +12,7 @@ use image_utilities::{
 use serde::{Deserialize, Serialize};
 use std::io::{Cursor, Read, Seek};
 use thumbhash::{rgba_to_thumb_hash, thumb_hash_to_average_rgba, thumb_hash_to_rgba};
-use wasm_bindgen::{prelude::*, JsValue};
+use wasm_bindgen::prelude::*;
 use xxhash_rust::const_xxh3::xxh3_64 as const_xxh3;
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
@@ -80,13 +81,15 @@ pub fn get_image_placeholder(image_bytes: &[u8]) -> PlaceholderResult {
     match format {
         Ok(ImageFormat::Png) => {
             placeholder_image
-                .write_to(&mut cursor, ImageOutputFormat::Png)
+                .write_to(&mut cursor, ImageFormat::Png)
                 .unwrap();
         }
         Ok(ImageFormat::Jpeg) => {
             let jpeg_quality = 90;
+            let jpeg_encoder = JpegEncoder::new_with_quality(&mut cursor, jpeg_quality);
             placeholder_image
-                .write_to(&mut cursor, ImageOutputFormat::Jpeg(jpeg_quality))
+                .to_rgb8()
+                .write_with_encoder(jpeg_encoder)
                 .unwrap();
         }
         Ok(_) | Err(_) => {
@@ -158,13 +161,12 @@ fn dynamic_image_to_bytes(image: &DynamicImage, format: ImageFormat) -> Option<V
     let mut cursor = Cursor::new(Vec::new());
     match format {
         ImageFormat::Png => {
-            image.write_to(&mut cursor, ImageOutputFormat::Png).unwrap();
+            image.write_to(&mut cursor, ImageFormat::Png).unwrap();
         }
         ImageFormat::Jpeg => {
             let jpeg_quality = 90;
-            image
-                .write_to(&mut cursor, ImageOutputFormat::Jpeg(jpeg_quality))
-                .unwrap();
+            let jpeg_encoder = JpegEncoder::new_with_quality(&mut cursor, jpeg_quality);
+            image.to_rgb8().write_with_encoder(jpeg_encoder).unwrap();
         }
         _ => {
             return None;
