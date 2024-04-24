@@ -1,5 +1,4 @@
 name: Rust
-
 on:
   push:
     branches:
@@ -11,7 +10,6 @@ on:
 permissions: read-all
 env:
   CARGO_TERM_COLOR: always
-
 jobs:
   test:
     name: Test
