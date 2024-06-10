@@ -11,6 +11,7 @@
     "url": "https://github.com/rodneylab/picpack"
   },
   "main": "index.js",
+  "keywords": [],
   "scripts": {
     "build": "wasm-pack build --target nodejs --scope rodneylab",
     "format": "prettier --write './**/*.ts'",
@@ -18,7 +19,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [],
   "devDependencies": {
     "@rodneylab/picpack": "link:pkg",
     "husky": "^9.0.11",
