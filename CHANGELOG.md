@@ -32,5 +32,5 @@
 
 ### Refactor
 
-- 🏄🏽  simplfy image_placeholder function
-- 🏄🏽  move image utilities to own source file
+- 🏄🏽 simplfy image_placeholder function
+- 🏄🏽 move image utilities to own source file
