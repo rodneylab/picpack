@@ -5,8 +5,8 @@ authors = ["Rodney Johnson <ask@rodneylab.com>"]
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/picpack"
-# image 0.25.0 rasises MSRV to 1.67.1
-rust-version = "1.67.1"
+# wasm-bindgen v.0.2.93 requires rust 1.76
+rust-version = "1.76"
 description = "Web image tooling"
 
 [package.metadata.wasm-pack.profile.release]
@@ -15,7 +15,7 @@ wasm-opt = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-crate_type = ["cdylib"]
+crate-type = ["cdylib"]
 
 [profile.release]
 codegen-units = 1
@@ -24,11 +24,14 @@ lto = true
 # strip = true
 opt-level = "z"
 
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+
 [dependencies]
-base64 = "0.22.0"
-image = { version = "0.25.1", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dds"] }
-serde = { version = "1.0", features = ["derive"] }
-serde-wasm-bindgen = "0.6.0"
+base64 = "0.22.1"
+image = { version = "0.25.5", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dds"] }
+serde = { version = "1.0.217", features = ["derive"] }
+serde-wasm-bindgen = "0.6.5"
 thumbhash = "0.1.0"
 wasm-bindgen = { version = "=0.2.95", features = ["serde-serialize"] }
-xxhash-rust = { version = "0.8.7", features = ["xxh3", "const_xxh3"] }
+xxhash-rust = { version = "0.8.15", features = ["xxh3", "const_xxh3"] }
