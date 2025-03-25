@@ -279,7 +279,7 @@ mod tests {
     fn get_input_image_hash_generates_expected_result() {
         // prepare
         let image_path = Path::new("./images/field.jpg");
-        let mut image_file = File::open(&image_path).expect("Error opening image file for test");
+        let mut image_file = File::open(image_path).expect("Error opening image file for test");
         let mut image_bytes = Vec::new();
         image_file
             .read_to_end(&mut image_bytes)
