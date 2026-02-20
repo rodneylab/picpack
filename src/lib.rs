@@ -2,9 +2,9 @@ mod fit;
 mod image_utilities;
 
 use image::{
-    codecs::jpeg::JpegEncoder,
     DynamicImage::{self, ImageRgba8},
     ImageBuffer, ImageFormat,
+    codecs::jpeg::JpegEncoder,
 };
 use image_utilities::{
     format_to_mime_type, image_dimensions, image_to_base64, resize_image, rgba_to_hex,
@@ -236,14 +236,14 @@ pub fn input_image_hash(image_bytes: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{get_image_placeholder, input_image_hash, ImageMetadata, PlaceholderResult};
+    use super::{ImageMetadata, PlaceholderResult, get_image_placeholder, input_image_hash};
     use std::{fs::File, io::Read, path::Path};
 
     #[test]
     fn get_image_placeholder_generates_expected_result() {
         // prepare
         let image_path = Path::new("./images/field.jpg");
-        let mut image_file = File::open(&image_path).expect("Error opening image file for test");
+        let mut image_file = File::open(image_path).expect("Error opening image file for test");
         let mut image_bytes = Vec::new();
         image_file
             .read_to_end(&mut image_bytes)
