@@ -1,9 +1,9 @@
 use crate::fit::output_dimensions;
-use base64::{engine::general_purpose, Engine as _};
+use base64::{Engine as _, engine::general_purpose};
 use image::{
-    imageops::{self, FilterType},
     DynamicImage::{self, ImageRgba8},
     ImageFormat,
+    imageops::{self, FilterType},
 };
 
 fn decimal_to_u8(decimal: f32) -> u8 {

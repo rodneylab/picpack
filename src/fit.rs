@@ -92,7 +92,7 @@ mod tests {
         // assert
         assert_eq!(
             (300, 120),
-            output_dimensions(input_width, input_height, width, height, fit.clone())
+            output_dimensions(input_width, input_height, width, height, fit)
         );
 
         // prepare
@@ -102,7 +102,7 @@ mod tests {
         // assert
         assert_eq!(
             (100, 200),
-            output_dimensions(input_width, input_height, width, height, fit.clone())
+            output_dimensions(input_width, input_height, width, height, fit)
         );
 
         // prepare
@@ -112,7 +112,7 @@ mod tests {
         // assert
         assert_eq!(
             (300, 200),
-            output_dimensions(input_width, input_height, width, height, fit.clone())
+            output_dimensions(input_width, input_height, width, height, fit)
         );
     }
 
