@@ -2,24 +2,17 @@
 name = "picpack"
 version = "0.1.1"
 authors = ["Rodney Johnson <ask@rodneylab.com>"]
-edition = "2021"
+edition = "2024"
 license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/picpack"
-# wasm-bindgen v.0.2.93 requires rust 1.76
-rust-version = "1.76"
+# Rust 2024 requires rust 1.85
+rust-version = "1.85"
 description = "Web image tooling"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib"]
-
-[profile.release]
-codegen-units = 1
-incremental = true
-lto = true
-# strip = true
-opt-level = "z"
 
 [dependencies]
 base64 = "0.22.1"
@@ -29,3 +22,9 @@ serde-wasm-bindgen = "0.6.5"
 thumbhash = "0.1.0"
 wasm-bindgen = { version = "=0.2.106", features = ["serde-serialize"] }
 xxhash-rust = { version = "0.8.15", features = ["xxh3", "const_xxh3"] }
+
+[profile.release]
+codegen-units = 1
+incremental = true
+lto = true
+opt-level = "z"
