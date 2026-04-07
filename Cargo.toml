@@ -5,8 +5,8 @@ authors = ["Rodney Johnson <ask@rodneylab.com>"]
 edition = "2024"
 license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/picpack"
-# Rust 2024 requires rust 1.85
-rust-version = "1.85"
+# image 0.25.10 requires rust 1.88
+rust-version = "1.88"
 description = "Web image tooling"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 base64 = "0.22.1"
-image = { version = "0.25.9", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dds"] }
+image = { version = "0.25.10", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dds"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde-wasm-bindgen = "0.6.5"
 thumbhash = "0.1.0"
