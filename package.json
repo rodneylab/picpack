@@ -1,17 +1,15 @@
 {
   "name": "root",
-  "collaborators": [
-    "Rodney Johnson <ask@rodneylab.com>"
-  ],
-  "description": "Web image tooling",
   "version": "0.1.1",
+  "description": "Web image tooling",
+  "keywords": [],
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/rodneylab/picpack"
   },
+  "type": "module",
   "main": "index.js",
-  "keywords": [],
   "scripts": {
     "build": "wasm-pack build --target nodejs --scope rodneylab",
     "format": "prettier --write './**/*.ts'",
@@ -25,10 +23,7 @@
     "prettier": "^3.8.2",
     "vitest": "^4.1.4"
   },
-  "type": "module",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
-  }
+  "collaborators": [
+    "Rodney Johnson <ask@rodneylab.com>"
+  ]
 }
