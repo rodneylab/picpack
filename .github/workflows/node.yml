@@ -22,7 +22,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@4f366e621dc8fa63f557ca04b8f4361824a35a45 # stable
       - name: Install wasm-pack
         run: cargo install wasm-pack
-      - uses: pnpm/action-setup@08c4be7e2e672a47d11bd04269e27e5f3e8529cb # v6.0.0
+      - uses: pnpm/action-setup@903f9c1a6ebcba6cf41d87230be49611ac97822e # v6.0.3
         with:
           version: 10
       - name: Build
