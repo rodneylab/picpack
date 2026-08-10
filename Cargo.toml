@@ -15,7 +15,7 @@ description = "Web image tooling"
 crate-type = ["cdylib"]
 
 [dependencies]
-base64 = "0.22.1"
+base64 = "0.23.1"
 image = { version = "0.25.10", default-features = false, features = ["gif", "jpeg", "ico", "png", "pnm", "tga", "tiff", "bmp", "hdr", "dds"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde-wasm-bindgen = "0.6.5"
